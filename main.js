@@ -1,6 +1,8 @@
 const fs = require("fs");
 const file = process.argv[2];
 
+const DOMAIN = "https://uat-autopreferred.chase.com";
+
 function splitOnLastCharacter(str, char) {
   const lastIndex = str.lastIndexOf(char);
 
@@ -51,7 +53,7 @@ fs.readFile(file, "utf8", (err, data) => {
 
     for (const key in entries) {
       const url = entries[key].request.url;
-      if (url.startsWith("https://uat-autopreferred.chase.com")) {
+      if (url.startsWith(DOMAIN)) {
         const extension = findUrlExtension(url);
         addNewExtension(extension);
 

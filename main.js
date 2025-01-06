@@ -22,20 +22,23 @@ function findUrlExtension(url) {
   return extension;
 }
 
-function pushNew(array, value) {
+const results = {};
+
+function addNewExtension(extension) {
+  if (!results.hasOwnProperty(extension)) {
+    results[extension] = [];
+  }
+}
+
+function pushNewQuery(extension, value) {
   if (!value) {
     return;
   }
 
-  if (!array.includes(value)) {
-    array.push(value);
+  if (!results[extension].includes(value)) {
+    results[extension].push(value);
   }
 }
-
-const results = {
-  extensions: [],
-  queries: [],
-};
 
 fs.readFile(file, "utf8", (err, data) => {
   if (err) {
@@ -50,10 +53,10 @@ fs.readFile(file, "utf8", (err, data) => {
       const url = entries[key].request.url;
       if (url.startsWith("https://uat-autopreferred.chase.com")) {
         const extension = findUrlExtension(url);
-        pushNew(results.extensions, extension);
+        addNewExtension(extension);
 
         for (const query in (string = entries[key].request.queryString)) {
-          pushNew(results.queries, string[query].name);
+          pushNewQuery(extension, string[query].name);
         }
       }
     }

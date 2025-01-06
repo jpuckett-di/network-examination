@@ -12,11 +12,21 @@ function splitOnLastCharacter(str, char) {
 }
 
 function findUrlExtension(url) {
-    const noQuery = splitOnLastCharacter(url, "?")[0];
-    return splitOnLastCharacter(noQuery, ".")[1];
+  const noQuery = splitOnLastCharacter(url, "?")[0];
+  const extension = splitOnLastCharacter(noQuery, ".")[1];
+
+  if (extension.startsWith('com')) {
+    return
+  }
+
+  return extension
 }
 
 function pushNew(array, value) {
+  if (!value) {
+    return;
+  }
+
   if (!array.includes(value)) {
     array.push(value);
   }
@@ -37,8 +47,8 @@ fs.readFile(file, "utf8", (err, data) => {
       const url = entries[key].request.url;
       if (url.startsWith("https://uat-autopreferred.chase.com")) {
         console.log(url);
-        const extension = findUrlExtension(url)
-        pushNew(extensions, extension)
+        const extension = findUrlExtension(url);
+        pushNew(extensions, extension);
         console.log(extension);
         console.log(entries[key].request.queryString, "\n");
       }
@@ -47,5 +57,5 @@ fs.readFile(file, "utf8", (err, data) => {
     console.error("Error parsing JSON:", parseError);
   }
 
-  console.log(extensions)
+  console.log(extensions);
 });

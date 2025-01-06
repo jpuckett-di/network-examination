@@ -15,11 +15,11 @@ function findUrlExtension(url) {
   const noQuery = splitOnLastCharacter(url, "?")[0];
   const extension = splitOnLastCharacter(noQuery, ".")[1];
 
-  if (extension.startsWith('com')) {
-    return
+  if (extension.startsWith("com")) {
+    return;
   }
 
-  return extension
+  return extension;
 }
 
 function pushNew(array, value) {
@@ -32,7 +32,10 @@ function pushNew(array, value) {
   }
 }
 
-const extensions = [];
+const results = {
+  extensions: [],
+  queries: [],
+};
 
 fs.readFile(file, "utf8", (err, data) => {
   if (err) {
@@ -46,16 +49,17 @@ fs.readFile(file, "utf8", (err, data) => {
     for (const key in entries) {
       const url = entries[key].request.url;
       if (url.startsWith("https://uat-autopreferred.chase.com")) {
-        console.log(url);
         const extension = findUrlExtension(url);
-        pushNew(extensions, extension);
-        console.log(extension);
-        console.log(entries[key].request.queryString, "\n");
+        pushNew(results.extensions, extension);
+
+        for (const query in (string = entries[key].request.queryString)) {
+          pushNew(results.queries, string[query].name);
+        }
       }
     }
   } catch (parseError) {
     console.error("Error parsing JSON:", parseError);
   }
 
-  console.log(extensions);
+  console.log(results);
 });
